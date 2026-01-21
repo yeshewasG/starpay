@@ -3,7 +3,7 @@ name: Build Next.js Docker Image on VPS
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
