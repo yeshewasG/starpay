@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "standalone",
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "teletv-production.obsv3.et-global-1.ethiotelecom.et",
+        port: "",
+        pathname: "/connect-dev/banks/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
