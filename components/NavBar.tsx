@@ -1,8 +1,11 @@
+"use client";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LogInIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
+  const router = useRouter();
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50">
       <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-full px-6 py-3 flex items-center justify-between shadow-sm">
@@ -21,6 +24,15 @@ export function Navbar() {
 
         {/* Action Icons & Cart */}
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full  border-[#004D3D] text-[#004D3D] hover:bg-gray-50 h-12 w-12"
+            onClick={() => router.push("/sign-in")}
+          >
+            <LogInIcon />
+          </Button>
+
           {/* Help Icon */}
           <Button
             variant="outline"
