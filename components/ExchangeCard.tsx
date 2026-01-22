@@ -9,10 +9,16 @@ import { InfoIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { ExchangesResponse } from "@/lib/types";
 import { useRemittanceStore } from "@/lib/stores/remittanceStore"; // adjust path
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { exchangeSchema } from "@/lib/validation-schema";
+import * as yup from "yup";
 
 const QUICK_AMOUNTS = ["50", "100", "200", "300", "500", "1000"];
+
+type ExchangeFormValues = yup.InferType<typeof exchangeSchema>;
 
 export default function ExchangeCard({
   data,
@@ -21,23 +27,66 @@ export default function ExchangeCard({
   data: ExchangesResponse;
   onNext: () => void;
 }) {
-  const { usdAmount, setUsdAmount } = useRemittanceStore();
+  const [lastChanged, setLastChanged] = useState<"usd" | "etb" | null>(null);
+
+  const { setUsdAmount } = useRemittanceStore();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<ExchangeFormValues>({
+    resolver: yupResolver(exchangeSchema),
+    defaultValues: {
+      usdAmount: 0,
+      etbAmount: 0,
+    },
+  });
+
+  const usdAmount = watch("usdAmount");
+  const etbAmount = watch("etbAmount");
+  useEffect(() => {
+    if (lastChanged === "usd" && usdAmount && data?.cbe?.amount) {
+      const etb = Number(usdAmount) * Number(data.cbe.amount);
+      setValue("etbAmount", Number(etb.toFixed(2)), {
+        shouldValidate: false,
+      });
+    }
+  }, [usdAmount, data?.cbe?.amount, lastChanged, setValue]);
+
+  useEffect(() => {
+    if (lastChanged === "etb" && etbAmount && data?.cbe?.amount) {
+      const usd = Number(etbAmount) / Number(data.cbe.amount);
+
+      const fixedUsd = Number(usd.toFixed(2));
+
+      setValue("usdAmount", fixedUsd, {
+        shouldValidate: true,
+      });
+
+      setUsdAmount(fixedUsd.toString());
+
+      // ✅ auto-select quick amount if match
+      if (QUICK_AMOUNTS.includes(fixedUsd.toString())) {
+        setSelectedQuickAmount(fixedUsd.toString());
+      } else {
+        setSelectedQuickAmount(null);
+      }
+    }
+  }, [etbAmount, data?.cbe?.amount, lastChanged, setValue, setUsdAmount]);
 
   // Local state just for UI highlight (syncs with store)
   const [selectedQuickAmount, setSelectedQuickAmount] = useState<string | null>(
     null,
   );
-  // useEffect(() => {
-  //   if (usdAmount && QUICK_AMOUNTS.includes(usdAmount)) {
-  //     setSelectedQuickAmount(usdAmount);
-  //   } else {
-  //     setSelectedQuickAmount(null);
-  //   }
-  // }, [usdAmount]);
 
   const handleQuickAmountClick = (amount: string) => {
-    setUsdAmount(amount);
+    setLastChanged("usd");
     setSelectedQuickAmount(amount);
+    setValue("usdAmount", Number(amount), { shouldValidate: true });
+    setUsdAmount(amount);
   };
 
   return (
@@ -84,14 +133,23 @@ export default function ExchangeCard({
               </span>
 
               <Input
+                className="w-full text-4xl font-bold text-black pl-10 pr-28 h-16 bg-transparent border-none shadow-none ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
                 id="amount-usd"
                 type="tel"
                 placeholder="0.00"
-                value={usdAmount}
-                onChange={(e) => setUsdAmount(e.target.value)}
-                min={5}
-                maxLength={10} // increased a bit — 99999.99 still fits
-                className="w-full text-4xl font-bold text-black pl-10 pr-28 h-16 bg-transparent border-none shadow-none ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
+                {...register("usdAmount")}
+                onChange={(e) => {
+                  setLastChanged("usd");
+                  const value = Number(e.target.value);
+                  setValue("usdAmount", value, { shouldValidate: true });
+                  setUsdAmount(e.target.value);
+
+                  if (QUICK_AMOUNTS.includes(e.target.value)) {
+                    setSelectedQuickAmount(e.target.value);
+                  } else {
+                    setSelectedQuickAmount(null);
+                  }
+                }}
               />
 
               <div className="absolute right-3 flex items-center gap-1.5 rounded-2xl bg-[#F9F9F9] px-3 py-1.5 min-w-[90px]">
@@ -128,13 +186,14 @@ export default function ExchangeCard({
                 id="amount-etb"
                 type="tel"
                 placeholder="0.00"
-                value={
-                  usdAmount && data?.cbe?.amount
-                    ? (Number(usdAmount) * Number(data.cbe.amount)).toFixed(2)
-                    : ""
-                }
-                readOnly
-                className="w-full text-4xl font-bold text-black pr-28 h-16 bg-transparent border-none shadow-none ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 cursor-default"
+                {...register("etbAmount")}
+                onChange={(e) => {
+                  setLastChanged("etb");
+                  setValue("etbAmount", Number(e.target.value), {
+                    shouldValidate: false,
+                  });
+                }}
+                className="w-full text-4xl font-bold text-black  pr-28 h-16 bg-transparent border-none shadow-none ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
               />
 
               <div className="absolute right-3 flex items-center gap-1.5 rounded-2xl bg-[#F9F9F9] px-3 py-1.5 min-w-[90px]">
@@ -201,10 +260,9 @@ export default function ExchangeCard({
             ))}
           </div>
 
-          {/* CTA */}
           <Button
-            className="w-full rounded-full py-6 text-lg font-normal shadow-md"
-            onClick={onNext}
+            className="w-full rounded-full py-6 text-lg"
+            onClick={handleSubmit(onNext)}
           >
             Send Money
           </Button>

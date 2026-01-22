@@ -25,7 +25,7 @@ export interface BankDetails {
 }
 
 export interface ExchangesResponse {
-  [key: string]: BankDetails;
+  cbe: BankDetails;
   // Using a record/index signature since 'cbe' looks like a dynamic key
 }
 
@@ -84,7 +84,6 @@ export interface Transaction {
   __v: number;
   externalResponse: ExternalResponse;
 }
-
 
 export interface TransactionsResponse {
   data: Transaction[];

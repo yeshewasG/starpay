@@ -71,3 +71,25 @@ export const userSchema = yup.object({
   banned: yup.boolean().required(),
   role: yup.string().required(),
 });
+
+export const exchangeSchema = yup.object({
+  usdAmount: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" || isNaN(value) ? undefined : value,
+    )
+    .required("Amount is required")
+    .min(5, "Minimum amount is $5"),
+
+  etbAmount: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" || isNaN(value) ? undefined : value,
+    )
+    .required("Amount is required"),
+});
+
+export const giftSchema = yup.object({
+  recipientAccount: yup.string().required("Account number is required"),
+  senderName: yup.string().required("Sender name is required"),
+});

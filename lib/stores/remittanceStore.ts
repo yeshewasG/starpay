@@ -16,6 +16,8 @@ interface RemittanceState {
   step: Step;
   usdAmount: string;
   recipientName: string;
+  recipientAccount: string;
+  senderName: string;
   recipientPhone: string;
 
   selectedBank: Bank | null;
@@ -27,6 +29,8 @@ interface RemittanceState {
   setStep: (step: Step) => void;
   setUsdAmount: (amount: string) => void;
   setRecipientName: (name: string) => void;
+  setRecipientAccount: (name: string) => void;
+  setSenderName: (name: string) => void;
   setRecipientPhone: (phone: string) => void;
 
   setSelectedBank: (bank: Bank | null) => void;
@@ -44,35 +48,41 @@ export const useRemittanceStore = create<RemittanceState>()(
       step: "amount",
       usdAmount: "",
       recipientName: "",
+      recipientAccount: "",
+      senderName: "",
       recipientPhone: "",
 
       selectedBank: null,
       selectedGift: null,
       paymentMethod: null,
 
-      cybersourcePayload: null, // ✅ initialize
+      cybersourcePayload: null,
 
       setStep: (step) => set({ step }),
       setUsdAmount: (amount) => set({ usdAmount: amount }),
-      setRecipientName: (name) => set({ recipientName: name }),
+      setRecipientName: (name) => set({ recipientName: name }), // ✅ correct
+      setRecipientAccount: (account) => set({ recipientAccount: account }), // ✅ correct
+      setSenderName: (name) => set({ senderName: name }), // ✅ correct
       setRecipientPhone: (phone) => set({ recipientPhone: phone }),
 
       setSelectedBank: (bank) => set({ selectedBank: bank }),
       setSelectedGift: (gift) => set({ selectedGift: gift }),
       setPaymentMethod: (method) => set({ paymentMethod: method }),
 
-      setCybersourcePayload: (payload) => set({ cybersourcePayload: payload }), // ✅ setter
+      setCybersourcePayload: (payload) => set({ cybersourcePayload: payload }),
 
       reset: () =>
         set({
           step: "amount",
           usdAmount: "",
           recipientName: "",
+          recipientAccount: "",
+          senderName: "",
           recipientPhone: "",
           selectedBank: null,
           selectedGift: null,
           paymentMethod: null,
-          cybersourcePayload: null, // ✅ reset
+          cybersourcePayload: null,
         }),
     }),
     {
@@ -80,10 +90,11 @@ export const useRemittanceStore = create<RemittanceState>()(
       partialize: (state) => ({
         usdAmount: state.usdAmount,
         recipientName: state.recipientName,
+        recipientAccount: state.recipientAccount, // ✅ persist account too
         recipientPhone: state.recipientPhone,
         selectedGift: state.selectedGift,
         selectedBank: state.selectedBank,
-        cybersourcePayload: state.cybersourcePayload, // ✅ persist payload
+        cybersourcePayload: state.cybersourcePayload,
       }),
     },
   ),
