@@ -1,5 +1,4 @@
 "use client";
-import HeroSection from "@/components/HeroSection";
 import { useExchanges, useKey } from "../hooks/useAppService";
 import { FloatingSheet } from "@/components/FloatingSheet";
 import { useRemittanceStore } from "@/lib/stores/remittanceStore";
@@ -7,7 +6,6 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ExchangeCard from "@/components/ExchangeCard";
-import RemittanceSheet from "@/components/RemittanceSheet";
 
 export default function Home() {
   const { data: key } = useKey();

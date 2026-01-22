@@ -43,7 +43,7 @@ export const useNameCheck = () => {
     mutationFn: async ({ data }: { data: NameCheckPayload }) => {
       return await nameCheck(data);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["account-name"] });
     },
   });

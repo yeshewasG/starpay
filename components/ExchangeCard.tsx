@@ -31,19 +31,14 @@ export default function ExchangeCard({
 
   const { setUsdAmount } = useRemittanceStore();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ExchangeFormValues>({
-    resolver: yupResolver(exchangeSchema),
-    defaultValues: {
-      usdAmount: 0,
-      etbAmount: 0,
-    },
-  });
+  const { register, handleSubmit, setValue, watch } =
+    useForm<ExchangeFormValues>({
+      resolver: yupResolver(exchangeSchema),
+      defaultValues: {
+        usdAmount: 0,
+        etbAmount: 0,
+      },
+    });
 
   const usdAmount = watch("usdAmount");
   const etbAmount = watch("etbAmount");

@@ -30,9 +30,8 @@ export default function GiftReceiverDetails() {
 
   const {
     register,
-    handleSubmit,
     getValues,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<GiftFormValues>({
     resolver: yupResolver(giftSchema),
     defaultValues: {
@@ -47,8 +46,9 @@ export default function GiftReceiverDetails() {
     if (!accountNum || accountNum.length < 5) return;
 
     try {
+      if (!selectedBank?.etSwitchCode) return;
       const payload: NameCheckPayload = {
-        institutionId: selectedBank?.etSwitchCode!,
+        institutionId: selectedBank?.etSwitchCode,
         account_number: accountNum,
       };
 

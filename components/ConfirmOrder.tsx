@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeftRight, User, ChevronLeft } from "lucide-react";
+import { ArrowLeftRight, User } from "lucide-react";
 import { useRemittanceStore } from "@/lib/stores/remittanceStore";
 
 export default function ConfirmOrder() {
@@ -10,22 +9,9 @@ export default function ConfirmOrder() {
     usdAmount,
     recipientName,
     recipientAccount,
-    recipientPhone,
     senderName,
     selectedBank,
-    setStep,
   } = useRemittanceStore();
-
-  // Helper to get initials (e.g., "Yeshiwas Getawbeza" -> "YG")
-  const getInitials = (name: string) => {
-    if (!name) return "??";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   // Static example for exchange rate (Replace with your actual logic/state)
   const exchangeRate = 151.61;
