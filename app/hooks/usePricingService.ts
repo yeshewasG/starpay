@@ -37,7 +37,7 @@ export interface PricingContextItem {
   bank: Bank;
   fee: Fee | null;
   bonus: Bonus | null;
-  exchangeRate: any | null; // you can strongly type this later
+  exchangeRate: unknown | null; // you can strongly type this later
 }
 
 export interface PaginatedPricingContext {

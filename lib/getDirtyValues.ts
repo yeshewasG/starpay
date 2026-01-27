@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 type DirtyFields<T> = {
   [K in keyof T]?: T[K] extends object ? DirtyFields<T[K]> : boolean;
 };

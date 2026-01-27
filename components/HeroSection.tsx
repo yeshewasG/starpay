@@ -13,7 +13,7 @@ export default function HeroSection() {
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left Column: Text Content – stays mostly the same */}
         <div className="space-y-6">
-          <div className="flex gap-2 items-center flex-wrap">
+          {/* <div className="flex gap-2 items-center flex-wrap">
             <Badge
               variant="outline"
               className="bg-white px-3 py-1 border-none shadow-sm text-xs font-bold"
@@ -26,7 +26,7 @@ export default function HeroSection() {
               {isLoading ? "..." : (data?.cbe?.bonus?.bonusAmount ?? "N/A")}{" "}
               ETB/1 USD
             </Badge>
-          </div>
+          </div> */}
 
           <h1 className="text-5xl md:text-6xl font-black tracking-tight text-black leading-[1.1]">
             Send Money Home <br /> Instantly <br /> Without the Hassle
