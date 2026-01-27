@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       `<html>
         <body>
           <script>
-            window.top.location.href = "/success/ui?tid=${transactionId}";
+            window.top.location.href = "/?tid=${transactionId}";
           </script>
         </body>
       </html>`,

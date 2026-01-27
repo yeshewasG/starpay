@@ -7,7 +7,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BankList from "./BankList";
 import GiftReceiverDetails from "./GiftReceiverInfo";
 import ConfirmOrder from "./ConfirmOrder";
@@ -19,6 +19,23 @@ import { Payment, usePaymentService } from "@/app/hooks/usePaymentService";
 import { Spinner, SpinnerCustom } from "./Loading";
 
 export function FloatingSheet({ open, onOpenChange }: ModalProps) {
+  const [cyberSourceData, setCyberSourceData] = useState("");
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === "CYBERSOURCE_RESPONSE") {
+        console.log("Received CyberSource Data:", event.data.payload);
+        setCyberSourceData(event.data.payload);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
   const { useInitiate } = usePaymentService();
   const { mutateAsync: initiate, isPending: isInitiating } = useInitiate();
   const {
