@@ -17,24 +17,12 @@ import { ModalProps } from "@/lib/types";
 import { toast } from "sonner";
 import { Payment, usePaymentService } from "@/app/hooks/usePaymentService";
 import { Spinner, SpinnerCustom } from "./Loading";
+import { PaymentData, PaymentResult } from "./PaymentResult";
 
 export function FloatingSheet({ open, onOpenChange }: ModalProps) {
-  const [cyberSourceData, setCyberSourceData] = useState("");
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "CYBERSOURCE_RESPONSE") {
-        console.log("Received CyberSource Data:", event.data.payload);
-        setCyberSourceData(event.data.payload);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
+  const [cyberSourceData, setCyberSourceData] = useState<PaymentData | null>(
+    null,
+  ); // <-- fix type
 
   const { useInitiate } = usePaymentService();
   const { mutateAsync: initiate, isPending: isInitiating } = useInitiate();
@@ -56,7 +44,27 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
     reset();
     // else if (step !== "amount") setStep("amount");
   };
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === "CYBERSOURCE_RESPONSE") {
+        try {
+          const payload =
+            typeof event.data.payload === "string"
+              ? JSON.parse(event.data.payload)
+              : event.data.payload;
+          console.log("Received CyberSource Data:", payload);
+          setCyberSourceData(payload);
+          setStep("success"); // Automatically go to success step
+        } catch (err) {
+          console.error("Failed to parse CyberSource payload", err);
+          toast.error("Invalid payment response", { position: "top-center" });
+        }
+      }
+    };
 
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [setStep]);
   useEffect(() => {
     if (step === "payment" && !cybersourcePayload) {
       const payload: Payment = {
@@ -163,19 +171,8 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
             </div>
           )}
 
-          {step === "success" && (
-            <div className="text-center space-y-6 py-10">
-              <div className="text-7xl">🎉</div>
-              <h2 className="text-3xl font-bold text-green-800">
-                Transfer Sent!
-              </h2>
-              <p className="text-gray-700">
-                Your ${usdAmount} transfer has been successful.
-              </p>
-              <Button className="w-full bg-[#008162]" onClick={handleClose}>
-                Done
-              </Button>
-            </div>
+          {step === "success" && cyberSourceData && (
+            <PaymentResult data={cyberSourceData} />
           )}
         </div>
 
