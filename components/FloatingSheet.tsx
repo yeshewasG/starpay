@@ -52,7 +52,7 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
             typeof event.data.payload === "string"
               ? JSON.parse(event.data.payload)
               : event.data.payload;
-          console.log("Received CyberSource Data:", payload);
+          // console.log("Received CyberSource Data:", payload);
           setCyberSourceData(payload);
           setStep("success"); // Automatically go to success step
         } catch (err) {
@@ -190,6 +190,17 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
               onClick={next}
             >
               Continue
+            </Button>
+          </div>
+        )}
+        {step === "success" && (
+          <div className="p-6 flex gap-3 ">
+            <Button
+              variant="outline"
+              className="flex-1 h-12"
+              onClick={handleClose}
+            >
+              Close
             </Button>
           </div>
         )}
