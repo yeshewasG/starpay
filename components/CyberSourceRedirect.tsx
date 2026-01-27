@@ -50,23 +50,22 @@ export default function CyberSourceIframe({
 
     doc.open();
     doc.write(`
-      <html>
-        <body>
-          <form id="cybersourceForm" method="POST" action="${escapeHtml(
-            cybersourcePayload?.paymentUrl!,
-          )}">
-            ${Object.entries(cybersourcePayload?.fields!)
-              .map(
-                ([key, value]) =>
-                  `<input type="hidden" name="${escapeHtml(
-                    key,
-                  )}" value="${escapeHtml(value)}" />`,
-              )
-              .join("")}
-          </form>
-        </body>
-      </html>
-    `);
+  <html>
+    <body>
+      <form id="cybersourceForm" method="POST" action="${escapeHtml(
+        cybersourcePayload.paymentUrl,
+      )}">
+        ${Object.entries(cybersourcePayload.fields)
+          .map(
+            ([key, value]) =>
+              `<input type="hidden" name="${key}" value="${value}" />`,
+          )
+          .join("")}
+      </form>
+    </body>
+  </html>
+`);
+
     doc.close();
 
     // Submit the form immediately after writing
