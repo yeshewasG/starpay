@@ -25,31 +25,8 @@ export interface BankDetails {
 }
 
 export interface ExchangesResponse {
-  cbe: BankDetails;
+  data: Bank;
   // Using a record/index signature since 'cbe' looks like a dynamic key
-}
-
-export interface Bank {
-  _id: string;
-  name: string;
-  orgCode: string;
-  type: "bank";
-  etSwitchCode: string;
-  address: string;
-  email: string;
-  phoneNumber: string;
-  logo: string;
-  users: string[];
-  isDeleted: boolean;
-  enabled: boolean;
-  createdAt: string; // ISO date string
-  updatedAt?: string; // some entries use updatedAt
-  lastModified?: string; // some entries use lastModified
-  __v: number;
-
-  card?: string | null;
-  exchangeRate?: number | null;
-  bic_code?: string;
 }
 
 export interface BanksResponse {
@@ -87,4 +64,35 @@ export interface Transaction {
 
 export interface TransactionsResponse {
   data: Transaction[];
+}
+
+export interface Bank {
+  _id: string;
+  name: string;
+  institutionId: string;
+  swiftCode: string;
+  logoUrl: string;
+  enabled: boolean;
+  bonusType: "percentage" | "fixed";
+  bonusAmount: number;
+  feeType: "percentage" | "fixed";
+  feeAmount: number;
+  buyingRate: number;
+  sellingRate: number;
+}
+
+export interface CybersourcePayload {
+  paymentUrl: string;
+  fields: {
+    access_key: string;
+    profile_id: string;
+    transaction_uuid: string;
+    signed_field_names: string;
+    unsigned_field_names: string;
+    transaction_type: string;
+    reference_number: string;
+    amount: string;
+    currency: string;
+    signature: string;
+  };
 }

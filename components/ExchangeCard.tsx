@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { InfoIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { ExchangesResponse } from "@/lib/types";
+import { Bank, ExchangesResponse } from "@/lib/types";
 import { useRemittanceStore } from "@/lib/stores/remittanceStore"; // adjust path
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ export default function ExchangeCard({
   data,
   onNext,
 }: {
-  data: ExchangesResponse;
+  data: Bank;
   onNext: () => void;
 }) {
   const [lastChanged, setLastChanged] = useState<"usd" | "etb" | null>(null);
@@ -43,17 +43,17 @@ export default function ExchangeCard({
   const usdAmount = watch("usdAmount");
   const etbAmount = watch("etbAmount");
   useEffect(() => {
-    if (lastChanged === "usd" && usdAmount && data?.cbe?.amount) {
-      const etb = Number(usdAmount) * Number(data.cbe.amount);
+    if (lastChanged === "usd" && usdAmount && data?.buyingRate) {
+      const etb = Number(usdAmount) * Number(data?.buyingRate);
       setValue("etbAmount", Number(etb.toFixed(2)), {
         shouldValidate: false,
       });
     }
-  }, [usdAmount, data?.cbe?.amount, lastChanged, setValue]);
+  }, [usdAmount, data?.buyingRate, lastChanged, setValue]);
 
   useEffect(() => {
-    if (lastChanged === "etb" && etbAmount && data?.cbe?.amount) {
-      const usd = Number(etbAmount) / Number(data.cbe.amount);
+    if (lastChanged === "etb" && etbAmount && data?.buyingRate) {
+      const usd = Number(etbAmount) / Number(data?.buyingRate);
 
       const fixedUsd = Number(usd.toFixed(2));
 
@@ -61,7 +61,7 @@ export default function ExchangeCard({
         shouldValidate: true,
       });
 
-      setUsdAmount(fixedUsd.toString());
+      setUsdAmount(fixedUsd);
 
       // ✅ auto-select quick amount if match
       if (QUICK_AMOUNTS.includes(fixedUsd.toString())) {
@@ -70,7 +70,7 @@ export default function ExchangeCard({
         setSelectedQuickAmount(null);
       }
     }
-  }, [etbAmount, data?.cbe?.amount, lastChanged, setValue, setUsdAmount]);
+  }, [etbAmount, data?.buyingRate, lastChanged, setValue, setUsdAmount]);
 
   // Local state just for UI highlight (syncs with store)
   const [selectedQuickAmount, setSelectedQuickAmount] = useState<string | null>(
@@ -81,7 +81,7 @@ export default function ExchangeCard({
     setLastChanged("usd");
     setSelectedQuickAmount(amount);
     setValue("usdAmount", Number(amount), { shouldValidate: true });
-    setUsdAmount(amount);
+    setUsdAmount(Number(amount));
   };
 
   return (
@@ -97,7 +97,7 @@ export default function ExchangeCard({
               className="rounded-md"
             />
             <p className="text-white font-bold">
-              1 USD = <span className="text-lg">{data?.cbe?.amount} ETB</span>
+              1 USD = <span className="text-lg">{data?.buyingRate} ETB</span>
             </p>
           </div>
 
@@ -105,10 +105,8 @@ export default function ExchangeCard({
             variant="secondary"
             className="rounded-full bg-white text-green-600 px-3 py-1 text-sm font-medium"
           >
-            <span className="font-bold mr-1">
-              +{data?.cbe?.bonus?.bonusAmount}
-            </span>{" "}
-            ETB / 1 USD
+            <span className="font-bold mr-1">+{data?.bonusAmount}</span> ETB / 1
+            USD
           </Badge>
         </div>
 
@@ -137,7 +135,7 @@ export default function ExchangeCard({
                   setLastChanged("usd");
                   const value = Number(e.target.value);
                   setValue("usdAmount", value, { shouldValidate: true });
-                  setUsdAmount(e.target.value);
+                  setUsdAmount(value);
 
                   if (QUICK_AMOUNTS.includes(e.target.value)) {
                     setSelectedQuickAmount(e.target.value);
@@ -228,9 +226,8 @@ export default function ExchangeCard({
               <p className="text-3xl font-black text-[#008162]">
                 {usdAmount
                   ? (
-                      Number(usdAmount) * Number(data?.cbe?.amount || 0) +
-                      Number(usdAmount) *
-                        Number(data?.cbe?.bonus?.bonusAmount || 0)
+                      Number(usdAmount) * Number(data?.buyingRate || 0) +
+                      Number(usdAmount) * Number(data?.bonusAmount || 0)
                     ).toFixed(2)
                   : "0.00"}
               </p>

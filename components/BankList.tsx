@@ -1,16 +1,22 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import { BanksResponse } from "@/lib/types";
+import { Bank, BanksResponse } from "@/lib/types";
 import { useRemittanceStore } from "@/lib/stores/remittanceStore";
 import { cn } from "@/lib/utils";
+import { useBankService } from "@/app/hooks/useBankService";
 
-export default function BankList({ data }: { data: BanksResponse }) {
+export default function BankList() {
+  const { useBanks } = useBankService();
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useBanks(100);
+  const banks: Bank[] = data?.pages?.[0]?.data;
+
   const selectedBank = useRemittanceStore((s) => s.selectedBank);
   const setSelectedBank = useRemittanceStore((s) => s.setSelectedBank);
 
   return (
     <div className="grid grid-cols-3 gap-2 sm:gap-4 pb-10">
-      {data?.data?.map((bank) => {
+      {banks?.map((bank) => {
         const isSelected = selectedBank?._id === bank._id;
 
         return (
@@ -29,7 +35,7 @@ export default function BankList({ data }: { data: BanksResponse }) {
               {/* Smaller logos for mobile to fit 3-col layout */}
               <div className="relative w-8 h-8 sm:w-12 sm:h-12 md:w-14 md:h-14 mb-2">
                 <Image
-                  src={bank.logo}
+                  src={bank.logoUrl}
                   alt={`${bank.name} logo`}
                   fill
                   className="object-contain"

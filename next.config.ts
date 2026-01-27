@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/connect-dev/banks/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.yeshilab.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

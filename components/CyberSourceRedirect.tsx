@@ -1,24 +1,48 @@
 "use client";
-/* eslint-disable */
 
+import { useRemittanceStore } from "@/lib/stores/remittanceStore";
 import { useEffect, useRef, useState } from "react";
 
+export interface CybersourcePayload {
+  paymentUrl: string;
+  fields: {
+    access_key: string;
+    profile_id: string;
+    transaction_uuid: string;
+    signed_field_names: string;
+    unsigned_field_names: string;
+    transaction_type: string;
+    reference_number: string;
+    amount: string;
+    currency: string;
+    signature: string;
+    [key: string]: string;
+  };
+}
+
 type Props = {
-  payload: Record<string, string>;
   width?: string | number;
   height?: string | number;
 };
 
 export default function CyberSourceIframe({
-  payload,
   width = "100%",
   height = 600,
 }: Props) {
+  const { cybersourcePayload } = useRemittanceStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
 
+  const escapeHtml = (str: string) =>
+    str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
   useEffect(() => {
-    if (!iframeRef.current) return;
+    if (!iframeRef.current || !cybersourcePayload) return;
 
     const doc = iframeRef.current.contentWindow?.document;
     if (!doc) return;
@@ -26,11 +50,16 @@ export default function CyberSourceIframe({
     doc.open();
     doc.write(`
       <html>
-        <body onload="document.forms[0].submit()">
-          <form method="POST" action="https://testsecureacceptance.cybersource.com/pay">
-            ${Object.entries(payload)
+        <body>
+          <form id="cybersourceForm" method="POST" action="${escapeHtml(
+            cybersourcePayload?.paymentUrl!,
+          )}">
+            ${Object.entries(cybersourcePayload?.fields!)
               .map(
-                ([k, v]) => `<input type="hidden" name="${k}" value="${v}" />`,
+                ([key, value]) =>
+                  `<input type="hidden" name="${escapeHtml(
+                    key,
+                  )}" value="${escapeHtml(value)}" />`,
               )
               .join("")}
           </form>
@@ -39,12 +68,25 @@ export default function CyberSourceIframe({
     `);
     doc.close();
 
+    // Submit the form immediately after writing
+    const form = doc.getElementById(
+      "cybersourceForm",
+    ) as HTMLFormElement | null;
+    form?.submit();
+
     setIframeLoaded(true);
-  }, [payload]);
+  }, [cybersourcePayload]);
 
   return (
-    <div className="w-full" style={{ width, height }}>
-      {!iframeLoaded && <p className="text-center">Loading payment...</p>}
+    <div
+      className="w-full relative rounded-xl overflow-hidden"
+      style={{ width, height }}
+    >
+      {!iframeLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+          <p className="text-center text-gray-700">Loading payment...</p>
+        </div>
+      )}
       <iframe
         ref={iframeRef}
         title="CyberSource Payment"

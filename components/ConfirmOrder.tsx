@@ -16,7 +16,7 @@ export default function ConfirmOrder() {
   // Static example for exchange rate (Replace with your actual logic/state)
   const exchangeRate = 151.61;
   const receivedEtb = usdAmount
-    ? (parseFloat(usdAmount) * exchangeRate).toLocaleString()
+    ? (usdAmount * exchangeRate).toLocaleString()
     : "0.00";
 
   return (
@@ -64,7 +64,7 @@ export default function ConfirmOrder() {
             {selectedBank && (
               <div className="flex items-center gap-3 p-1">
                 <Image
-                  src={selectedBank?.logo}
+                  src={selectedBank?.logoUrl}
                   alt={selectedBank?.name}
                   width={48}
                   height={48}

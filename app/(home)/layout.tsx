@@ -1,10 +1,16 @@
+"use client";
 import { Navbar } from "@/components/NavBar";
+import { useRemittanceStore } from "@/lib/stores/remittanceStore";
+import { useEffect } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    useRemittanceStore.getState().reset();
+  }, []);
   return (
     <main
       className="relative min-h-screen w-full overflow-x-hidden"

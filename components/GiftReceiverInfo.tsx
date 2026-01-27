@@ -4,17 +4,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRemittanceStore } from "@/lib/stores/remittanceStore";
 import { Field } from "./ui/field";
-import { useNameCheck } from "@/app/hooks/useAppService";
 import { NameCheckPayload } from "@/lib/types";
 import { giftSchema } from "@/lib/validation-schema";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
+import { useBankService } from "@/app/hooks/useBankService";
 
 type GiftFormValues = yup.InferType<typeof giftSchema>;
 
 export default function GiftReceiverDetails() {
+  const { useNameCheck } = useBankService();
   const { mutateAsync: nameCheck, isPending: isCheckingName } = useNameCheck();
 
   // Store actions/state
@@ -46,17 +47,27 @@ export default function GiftReceiverDetails() {
     if (!accountNum || accountNum.length < 5) return;
 
     try {
-      if (!selectedBank?.etSwitchCode) return;
+      if (!selectedBank?.institutionId) return;
       const payload: NameCheckPayload = {
-        institutionId: selectedBank?.etSwitchCode,
+        institutionId: selectedBank?.institutionId,
         account_number: accountNum,
       };
 
-      const res = await nameCheck({ data: payload });
-      if (res?.accountName) {
-        setRecipientAccount(accountNum);
-        setRecipientName(res.accountName);
-      }
+      nameCheck(
+        { id: selectedBank?._id, data: payload },
+        {
+          onSuccess: (res) => {
+            setRecipientAccount(accountNum);
+            setRecipientName(res.name);
+          },
+        },
+      );
+
+      // const res = await nameCheck({ data: payload });
+      // if (res?.accountName) {
+      //   setRecipientAccount(accountNum);
+      //   setRecipientName(res.accountName);
+      // }
     } catch (error) {
       console.error("Verification failed", error);
     }
@@ -87,7 +98,7 @@ export default function GiftReceiverDetails() {
         {selectedBank && (
           <div className="flex items-center gap-3 p-1">
             <Image
-              src={selectedBank?.logo}
+              src={selectedBank?.logoUrl}
               alt={selectedBank?.name}
               width={48}
               height={48}
