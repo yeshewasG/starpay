@@ -9,6 +9,8 @@ import {
   HandCoins,
   Gift,
   UserCircle2,
+  PiggyBank,
+  DollarSign,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -32,18 +34,17 @@ const menuItems: MenuItem[] = [
     iconColor: "text-blue-600",
   },
   {
-    title: "Products",
-    description:
-      "Create and manage product packages to be listed and displayed for customers.",
-    icon: <Package className="h-10 w-10" />,
+    title: "Banks",
+    description: "Create and manage Banks",
+    icon: <PiggyBank className="h-10 w-10" />,
     bgColor: "bg-emerald-950/35",
     iconColor: "text-emerald-600",
   },
   {
-    title: "Orders",
+    title: "Pricing",
     description:
       "View, and manage customer orders, including details and status updates.",
-    icon: <ShoppingBag className="h-10 w-10" />,
+    icon: <DollarSign className="h-10 w-10" />,
     bgColor: "bg-amber-950/30",
     iconColor: "text-amber-600",
   },
@@ -83,6 +84,10 @@ export default function AdminDashboard() {
 
     if (item.title === "Transactions") {
       router.push("/dashboard/transactions");
+    } else if (item.title === "Banks") {
+      router.push("/dashboard/banks");
+    } else if (item.title === "Pricing") {
+      router.push("/dashboard/pricing");
     } else {
       setIsDialogOpen(true);
     }

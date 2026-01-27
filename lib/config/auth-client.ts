@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react";
-import { authBaseUrl } from "../constants";
+import { apiBaseUrl } from "../constants";
 export const authClient = createAuthClient({
-  baseURL: authBaseUrl,
+  baseURL: apiBaseUrl,
   fetchOptions: {
     credentials: "include",
   },

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Bank } from "@/lib/types";
+import { Bank, CybersourcePayload } from "@/lib/types";
 
 type Step =
   | "amount"
@@ -14,7 +14,7 @@ type Step =
 
 interface RemittanceState {
   step: Step;
-  usdAmount: string;
+  usdAmount: number;
   recipientName: string;
   recipientAccount: string;
   senderName: string;
@@ -24,10 +24,10 @@ interface RemittanceState {
   selectedGift: string | null;
   paymentMethod: string | null;
 
-  cybersourcePayload: Record<string, string> | null; // ✅ Add CyberSource payload
+  cybersourcePayload: CybersourcePayload | null; // ✅ Add CyberSource payload
 
   setStep: (step: Step) => void;
-  setUsdAmount: (amount: string) => void;
+  setUsdAmount: (amount: number) => void;
   setRecipientName: (name: string) => void;
   setRecipientAccount: (name: string) => void;
   setSenderName: (name: string) => void;
@@ -37,7 +37,7 @@ interface RemittanceState {
   setSelectedGift: (gift: string | null) => void;
   setPaymentMethod: (method: string | null) => void;
 
-  setCybersourcePayload: (payload: Record<string, string> | null) => void; // ✅ setter
+  setCybersourcePayload: (payload: CybersourcePayload | null) => void; // ✅ setter
 
   reset: () => void;
 }
@@ -46,7 +46,7 @@ export const useRemittanceStore = create<RemittanceState>()(
   persist(
     (set) => ({
       step: "amount",
-      usdAmount: "",
+      usdAmount: 0,
       recipientName: "",
       recipientAccount: "",
       senderName: "",
@@ -74,7 +74,7 @@ export const useRemittanceStore = create<RemittanceState>()(
       reset: () =>
         set({
           step: "amount",
-          usdAmount: "",
+          usdAmount: 0,
           recipientName: "",
           recipientAccount: "",
           senderName: "",

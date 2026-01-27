@@ -7,7 +7,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useBanks } from "@/app/hooks/useAppService";
 import { useEffect } from "react";
 import BankList from "./BankList";
 import GiftReceiverDetails from "./GiftReceiverInfo";
@@ -16,10 +15,12 @@ import CyberSourceRedirect from "./CyberSourceRedirect";
 import { paymentBaseUrl, STEP_META } from "@/lib/constants";
 import { ModalProps } from "@/lib/types";
 import { toast } from "sonner";
+import { Payment, usePaymentService } from "@/app/hooks/usePaymentService";
+import { Spinner, SpinnerCustom } from "./Loading";
 
 export function FloatingSheet({ open, onOpenChange }: ModalProps) {
-  const { data: banks } = useBanks();
-
+  const { useInitiate } = usePaymentService();
+  const { mutateAsync: initiate, isPending: isInitiating } = useInitiate();
   const {
     step,
     setStep,
@@ -41,27 +42,26 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
 
   useEffect(() => {
     if (step === "payment" && !cybersourcePayload) {
+      const payload: Payment = {
+        amount: usdAmount,
+        senderName: senderName,
+        receiverName: recipientName,
+      };
+
       const initPayment = async () => {
         try {
-          const res = await fetch(paymentBaseUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              amount: usdAmount || "12",
-              currency: "USD",
-              referenceNumber: `ORDER_${Date.now()}`,
-            }),
-          });
-          if (!res.ok) throw new Error("Payment init failed");
-          const data = await res.json();
-          setCybersourcePayload(data);
-        } catch (e) {
-          console.error(e);
+          const res = await initiate(payload);
+          console.log(res);
+          setCybersourcePayload(res);
+        } catch (err) {
+          console.log(err);
+          toast.error("Payment Initialize failed", { position: "top-center" });
         }
       };
+
       initPayment();
     }
-  }, [step, cybersourcePayload, setCybersourcePayload, usdAmount]);
+  }, [step, cybersourcePayload, setCybersourcePayload, usdAmount, initiate]);
 
   const next = () => {
     if (step === "bank" && !selectedBank) {
@@ -69,7 +69,6 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
       return;
     }
 
-    console.log(recipientAccount, recipientName, senderName);
     if (
       step === "recipient" &&
       (!recipientAccount || !recipientName || !senderName)
@@ -129,12 +128,12 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {step === "bank" && <BankList data={banks!} />}
+          {step === "bank" && <BankList />}
           {step === "recipient" && <GiftReceiverDetails />}
           {step === "confirm" && <ConfirmOrder />}
           {step === "payment" && (
             <div className="h-full flex items-center justify-center">
-              {!cybersourcePayload ? (
+              {!cybersourcePayload && isInitiating ? (
                 <div className="space-y-4 text-center">
                   <div className="animate-spin h-8 w-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto" />
                   <p className="text-sm text-muted-foreground">
@@ -142,7 +141,7 @@ export function FloatingSheet({ open, onOpenChange }: ModalProps) {
                   </p>
                 </div>
               ) : (
-                <CyberSourceRedirect payload={cybersourcePayload} />
+                <CyberSourceRedirect />
               )}
             </div>
           )}
