@@ -107,7 +107,7 @@ export default function RemittanceSheet() {
         }}
       >
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {step === "bank" && <BankList data={banks!} />}
+          {step === "bank" && <BankList />}
           {step === "recipient" && <GiftReceiverDetails />}
           {step === "confirm" && <ConfirmOrder />}
           {step === "payment" && (
@@ -120,7 +120,7 @@ export default function RemittanceSheet() {
                   </p>
                 </div>
               ) : (
-                <CyberSourceRedirect payload={cybersourcePayload} />
+                <CyberSourceRedirect />
               )}
             </div>
           )}
