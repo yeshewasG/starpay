@@ -18,8 +18,8 @@ export default function PaymentFailed() {
       </div>
       <h1 className="text-2xl font-bold text-gray-900">Payment Failed</h1>
       <p className="text-gray-600 mt-2">
-        We couldn't process your transaction. Please check your card details or
-        try another method.
+        We couldn&apos;t process your transaction. Please check your card
+        details or try another method.
       </p>
       <div className="flex gap-4 mt-6">
         <a

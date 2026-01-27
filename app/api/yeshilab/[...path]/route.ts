@@ -1,5 +1,4 @@
-import { authBaseUrl } from "@/lib/constants";
-import axios from "axios";
+import { apiBaseUrl } from "@/lib/constants";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -10,7 +9,7 @@ export async function GET(
   const endpoint = path.join("/");
 
   try {
-    const res = await fetch(`${authBaseUrl}/api/${endpoint}`, {
+    const res = await fetch(`${apiBaseUrl}/api/${endpoint}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -18,7 +17,7 @@ export async function GET(
     });
 
     const data = await res.json();
-    // const res = await axios.get(`${authBaseUrl}/api/${endpoint}`);
+    // const res = await axios.get(`${apiBaseUrl}/api/${endpoint}`);
     // Return the API response as-is
     return NextResponse.json(res, { status: res.status });
   } catch (error) {
@@ -41,7 +40,7 @@ export async function POST(
 
   try {
     const body = await request.json(); // read the request body
-    const res = await fetch(`${authBaseUrl}/api/${endpoint}`, {
+    const res = await fetch(`${apiBaseUrl}/api/${endpoint}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -51,7 +50,7 @@ export async function POST(
     });
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
-    // const res = await axios.post(`${authBaseUrl}/api/${endpoint}`, body);
+    // const res = await axios.post(`${apiBaseUrl}/api/${endpoint}`, body);
 
     // return NextResponse.json(res, { status: res.status });
   } catch (error) {

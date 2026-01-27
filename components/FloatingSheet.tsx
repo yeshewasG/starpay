@@ -12,7 +12,7 @@ import BankList from "./BankList";
 import GiftReceiverDetails from "./GiftReceiverInfo";
 import ConfirmOrder from "./ConfirmOrder";
 import CyberSourceRedirect from "./CyberSourceRedirect";
-import { paymentBaseUrl, STEP_META } from "@/lib/constants";
+import {  STEP_META } from "@/lib/constants";
 import { ModalProps } from "@/lib/types";
 import { toast } from "sonner";
 import { Payment, usePaymentService } from "@/app/hooks/usePaymentService";
