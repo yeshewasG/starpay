@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-query";
 
 const API_BASE = `${apiBaseUrl}/api/banks`;
-
+//ferdf
 export interface Bank {
   _id?: string;
   name: string;
