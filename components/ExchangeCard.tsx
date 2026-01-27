@@ -16,18 +16,17 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { exchangeSchema } from "@/lib/validation-schema";
 import * as yup from "yup";
+import { useBankService } from "@/app/hooks/useBankService";
 
 const QUICK_AMOUNTS = ["50", "100", "200", "300", "500", "1000"];
 
 type ExchangeFormValues = yup.InferType<typeof exchangeSchema>;
 
-export default function ExchangeCard({
-  data,
-  onNext,
-}: {
-  data: Bank;
-  onNext: () => void;
-}) {
+export default function ExchangeCard({ onNext }: { onNext: () => void }) {
+  const { useBanks } = useBankService();
+  const { data: bank } = useBanks(100);
+  const data: Bank = bank?.pages?.[0]?.data?.[12];
+
   const [lastChanged, setLastChanged] = useState<"usd" | "etb" | null>(null);
 
   const { setUsdAmount } = useRemittanceStore();

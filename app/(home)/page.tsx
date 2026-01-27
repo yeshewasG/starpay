@@ -3,15 +3,10 @@ import { FloatingSheet } from "@/components/FloatingSheet";
 import { useRemittanceStore } from "@/lib/stores/remittanceStore";
 import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useBankService } from "../hooks/useBankService";
 import { SpinnerCustom } from "@/components/Loading";
 import ExchangeCard from "@/components/ExchangeCard";
-import { Bank } from "@/lib/types";
 
 export default function Home() {
-  const { useBanks } = useBankService();
-  const { data } = useBanks(100);
-  const bank: Bank = data?.pages?.[0]?.data?.[12];
   const { setStep } = useRemittanceStore();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -46,7 +41,7 @@ export default function Home() {
             {/* Right Column: Exchange Card in Hero */}
             <div className="relative z-10">
               {/* {!isLoading && data && ( */}
-              <ExchangeCard data={bank} onNext={handleStartRemittance} />
+              <ExchangeCard onNext={handleStartRemittance} />
               {/* )} */}
             </div>
           </div>

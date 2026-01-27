@@ -4,7 +4,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useBanks, useExchanges } from "@/app/hooks/useAppService";
 import { useEffect, useState } from "react";
-import ExchangeCard from "./ExchangeCard";
+// import ExchangeCard from "./ExchangeCard";
 import BankList from "./BankList";
 import GiftReceiverDetails from "./GiftReceiverInfo";
 import ConfirmOrder from "./ConfirmOrder";
@@ -12,9 +12,6 @@ import CyberSourceRedirect from "./CyberSourceRedirect";
 import { paymentBaseUrl } from "@/lib/constants";
 
 export default function RemittanceSheet() {
-  const { data } = useExchanges();
-  const { data: banks } = useBanks();
-
   const {
     step,
     setStep,
@@ -87,13 +84,13 @@ export default function RemittanceSheet() {
         if (!o) reset();
       }}
     >
-      <ExchangeCard
+      {/* <ExchangeCard
         data={data!}
         onNext={() => {
           setOpen(true);
           next();
         }}
-      />
+      /> */}
       {step !== "amount" && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
       )}

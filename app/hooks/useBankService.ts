@@ -32,7 +32,7 @@ export function useBankService() {
   const queryClient = useQueryClient();
 
   const useBanks = (limit = 10) => {
-    return useSuspenseInfiniteQuery({
+    return useInfiniteQuery({
       initialPageParam: 1,
       queryKey: ["banks"],
       queryFn: async ({ pageParam = 1 }) => {
