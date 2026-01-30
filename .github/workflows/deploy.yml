@@ -21,7 +21,6 @@ jobs:
 
             APP_DIR=~/startpay
 
-            echo "🚀 Deploying StartPay..."
 
             # Clone repo if it doesn't exist
             if [ ! -d "$APP_DIR/.git" ]; then
