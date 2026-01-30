@@ -35,7 +35,6 @@ jobs:
               git reset --hard origin/main
             fi
 
-            echo "🧹 Stopping existing containers..."
             docker compose down
 
             echo "🐳 Building Docker images..."
