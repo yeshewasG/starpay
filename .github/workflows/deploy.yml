@@ -27,7 +27,7 @@ jobs:
               echo "📦 Cloning repository..."
               mkdir -p $APP_DIR
               cd $APP_DIR
-              git clone https://${{ secrets.VPS_GH_PAT }}@github.com/yeshewasG/tolo__app_backend.git .
+              git clone https://${{ secrets.VPS_GH_PAT }}@github.com/yeshewasG/starpay.git .
             else
               cd $APP_DIR
               echo "🔄 Pulling latest changes..."
