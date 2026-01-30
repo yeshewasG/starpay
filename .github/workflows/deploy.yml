@@ -37,7 +37,7 @@ jobs:
             docker rm startpay || true
             docker run -d --name startpay --network traefik-net \
               -l "traefik.enable=true" \
-              -l "traefik.http.routers.startpay.rule=Host(\"startpay.yeshilab.com\")" \
+              -l "traefik.http.routers.startpay.rule=Host(\"remit.adeylab.com\")" \
               -l "traefik.http.routers.startpay.entrypoints=websecure" \
               -l "traefik.http.routers.startpay.tls=true" \
               -l "traefik.http.routers.startpay.tls.certresolver=leresolver" \
