@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  remit-app:
+    build: .
+    container_name: startpay
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3001"
+    networks:
+      - traefik-net
+    volumes:
+      - uploads:/usr/src/app/uploads
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.startpay.rule=Host(`remit.adeylab.com`)"
+      - "traefik.http.routers.startpay.entrypoints=websecure"
+      - "traefik.http.routers.startpay.tls=true" 
+      - "traefik.http.routers.startpay.tls.certresolver=leresolver"
+      - "traefik.http.routers.startpay.service=next-service"
+      - "traefik.http.services.startpay.loadbalancer.server.port=3001"
+
+networks:
+  traefik-net:
+    external: true
+
+volumes:
+  uploads:

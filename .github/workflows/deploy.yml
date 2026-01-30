@@ -30,17 +30,10 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           # timeout: 300
           script: |
-            cd ~/startpay
-            # sudo chown -R $USER:$USER .
-            docker build -t startpay:latest .
-            docker stop startpay || true
-            docker rm startpay || true
-            docker run -d --name startpay --network traefik-net \
-              -l "traefik.enable=true" \
-              -l "traefik.http.routers.startpay.rule=Host(\"remit.adeylab.com\")" \
-              -l "traefik.http.routers.startpay.entrypoints=websecure" \
-              -l "traefik.http.routers.startpay.tls=true" \
-              -l "traefik.http.routers.startpay.tls.certresolver=leresolver" \
-              -l "traefik.http.routers.startpay.service=next-service" \
-              -l "traefik.http.services.next-service.loadbalancer.server.port=3001" \
-              startpay:latest
+            set -e
+
+            cd ~/startpay || mkdir -p ~/startpay && cd ~/startpay
+            echo "Building & starting app with Docker Compose..."
+            docker compose down
+            docker compose up -d --build
+            echo "Deployment complete!"

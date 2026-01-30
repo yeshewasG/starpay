@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "img.yeshilab.com",
+        hostname: "img.adeylab.com",
         port: "",
         pathname: "/**",
       },
