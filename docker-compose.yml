@@ -15,12 +15,11 @@ services:
       - uploads:/usr/src/app/uploads
     labels:
       - "traefik.enable=true"
-
       - "traefik.http.routers.startpay.rule=Host(`remit.adeylab.com`)"
       - "traefik.http.routers.startpay.entrypoints=websecure"
-      - "traefik.http.routers.startpay.tls=true" 
+      - "traefik.http.routers.startpay.tls=true"
       - "traefik.http.routers.startpay.tls.certresolver=leresolver"
-      - "traefik.http.routers.startpay.service=next-service"
+      - "traefik.http.routers.startpay.service=startpay"
       - "traefik.http.services.startpay.loadbalancer.server.port=3001"
 
 networks:
