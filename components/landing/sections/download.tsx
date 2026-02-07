@@ -3,7 +3,7 @@ import React from "react";
 const AppDownloadSection = () => {
   return (
     // Changed min-h-[90vh] to min-h-fit to ensure it only takes necessary space
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-700 to-blue-600 px-6 md:px-12 lg:px-16 py-16 lg:py-24 flex flex-col lg:flex-row items-center">
+    <section className="relative overflow-hidden  px-6 md:px-12 lg:px-16 py-16 lg:py-24 flex flex-col lg:flex-row items-center">
       {/* LEFT CONTENT */}
       <div className="flex-1 text-center lg:text-left space-y-6 lg:space-y-8 z-10">
         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight">
@@ -42,7 +42,6 @@ const AppDownloadSection = () => {
       {/* RIGHT IMAGE - Now hidden on mobile/tablet, visible on large screens */}
       <div className="hidden lg:block flex-1 relative w-full h-[500px] xl:h-[600px]">
         {/* Glow effect */}
-        <div className="absolute inset-0 bg-blue-400/20 blur-3xl rounded-full" />
 
         {/* Clipped image */}
         <div

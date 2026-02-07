@@ -16,7 +16,7 @@ export default function HomePage() {
   }, []);
   return (
     <main className="flex flex-col">
-      <section className="container grid grid-cols-1 lg:grid-cols-2 gap-12 ">
+      {/* <section className="container grid grid-cols-1 lg:grid-cols-2 gap-12 ">
         <div className="relative w-30 h-30 flex items-center justify-center">
           <Image
             src="/logo.png"
@@ -26,7 +26,7 @@ export default function HomePage() {
             priority
           />
         </div>
-      </section>
+      </section> */}
       <HeroSection />
       <Features />
       <FeaturesAnywhere />

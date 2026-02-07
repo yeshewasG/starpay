@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import { motion } from "framer-motion";
 import {
   Play,
   Globe,
@@ -48,59 +49,60 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section className="relative bg-[#1a233a] pt-48 pb-24 overflow-visible">
-      {/* 🌊 Top Wave */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none">
-        <svg
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          className="w-full h-[120px] fill-white"
+    <section className="relative   pt-48 pb-24 overflow-visible">
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-3xl mx-auto"
         >
-          <path
-            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86
-          82.39-16.72,168.19-17.73,250.45-.39
-          C823.78,31,906.67,72,985.66,92.83
-          c70.05,18.48,146.53,26.09,214.34,3V0H0V120z"
-          />
-        </svg>
-      </div>
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            Trusted by Millions Worldwide
+          </h2>
+          <p className="mt-4 text-lg text-emerald-100">
+            We've been helping people send money globally since 2015. Our
+            platform is designed with security, convenience, and reliability in
+            mind.
+          </p>
+        </motion.div>
 
-      <div className="max-w-6xl mx-auto px-6 relative">
-        {/* 🎥 Floating Video / Image */}
-        <div className="relative -mt-60 mb-24 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-          <img
-            src="/images/background.png"
-            alt="Video Thumbnail"
-            className="w-full aspect-video object-cover transition-transform duration-500 hover:scale-105"
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <div className="h-20 w-20 flex items-center justify-center rounded-full bg-white shadow-xl hover:scale-110 transition">
-              <Play className="h-8 w-8 text-red-500 fill-red-500 ml-1" />
-            </div>
-          </div>
-        </div>
-
-        {/* Heading */}
-        <h2 className="text-center text-3xl md:text-4xl font-bold text-white mb-16">
-          Send money across borders with ease.
-        </h2>
-
-        {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+        <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
-            <div key={index} className="flex flex-col space-y-4">
-              <div className="p-3 bg-white/5 rounded-lg border border-white/10 w-fit">
-                {feature.icon}
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300"
+            >
+              <div className="flex items-center mb-4">
+                <div className="p-2 bg-emerald-500/20 rounded-lg">
+                  {feature.icon}
+                </div>
+                <h3 className="ml-4 text-xl font-semibold text-white">
+                  {feature.title}
+                </h3>
               </div>
-              <h3 className="text-xl font-semibold text-white">
-                {feature.title}
-              </h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
+              <p className="text-emerald-100">{feature.description}</p>
+            </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-16 flex flex-col items-center"
+        >
+          <div className="flex items-center bg-emerald-500/20 rounded-full px-6 py-3">
+            <Play className="h-5 w-5 text-emerald-400 mr-2" />
+            <span className="text-white font-medium">Watch How It Works</span>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

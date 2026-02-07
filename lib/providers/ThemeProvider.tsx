@@ -7,11 +7,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="light"
+      defaultTheme="system"
       enableSystem
       disableTransitionOnChange
     >
-      {children}
+      <div className="min-h-screen bg-background">{children}</div>
     </NextThemesProvider>
   );
 }
